@@ -1,8 +1,4 @@
 ﻿// See https://aka.ms/new-console-template for more information
-using System;
-using System.Collections.Generic;
-using static System.Runtime.InteropServices.JavaScript.JSType;
-
 
 public class Program
 {
@@ -30,7 +26,7 @@ public class Program
         WriteBoard(input);
 
         //規定回数まで入力を繰り返す
-        //※修正事項　9マス埋めるではなく9回入力できる状態(10回目にゲーム終了が表示される)
+        //※修正事項　whileを消すと入力一回でゲーム終了になってしまう
         int turn = 0;
         while (turn < 9)
         {
@@ -73,11 +69,26 @@ public class Program
         //〇を置く場所を入力
         Console.WriteLine("どこに置きますか？（１～９）");
         {
-            string inputN = Console.ReadLine();
-            int num = int.Parse(inputN);
-            int row = (num - 1) / 3;
-            int col = (num - 1) % 3;
-            input[row, col] = " ○ ";
+            List<(int, int)> emptyCells = new List<(int, int)>();
+            for (int i = 0; i < input.GetLength(0); i++)
+            {
+                for (int j = 0; j < input.GetLength(1); j++)
+                {
+                    if (input[i, j] == "   ")
+                    {
+                        emptyCells.Add((i, j));
+                    }
+                }
+            }
+
+            if (emptyCells.Count > 0)
+            {
+                string inputN = Console.ReadLine();
+                int num = int.Parse(inputN);
+                int row = (num - 1) / 3;
+                int col = (num - 1) % 3;
+                input[row, col] = " ○ ";
+            }
         }
         //入力済みの場所を選択した場合
         //Console.WriteLine("選択済みです。別の場所を選択してください。");
@@ -102,7 +113,7 @@ public class Program
         }
 
         //空欄がある場合
-        if (emptyCells.Count> 0)
+        if (emptyCells.Count > 0)
         {
             Random n = new Random();
             var (row, col) = emptyCells[n.Next(emptyCells.Count)];
