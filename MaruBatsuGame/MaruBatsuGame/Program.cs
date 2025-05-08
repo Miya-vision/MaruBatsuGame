@@ -1,5 +1,7 @@
 ﻿// See https://aka.ms/new-console-template for more information
 
+using System.Runtime.InteropServices;
+
 public class Program
 {
     static void Main()
@@ -26,26 +28,30 @@ public class Program
         WriteBoard(input);
 
         //規定回数まで入力を繰り返す
-        //※修正事項　whileを消すと入力一回でゲーム終了になってしまう
+        //※修正事項　whileを消すと入力一回でゲーム終了になってしまう(優先順位：低）
+        //※修正事項　ゲーム終了画面が残っているターンの数だけ表示されてしまう
         int turn = 0;
         while (turn < 9)
         {
-            //プレイヤー側の入力
-            InputNumber(input);
-
+            //ユーザー側の入力
+            bool isPlayerTurnSuccessful = InputNumber(input);
+            
             //現在のボード状態を表示
-            WriteBoard(input);
+             WriteBoard(input);
+            
+            //入力成功時　CPUのターン
+            if (isPlayerTurnSuccessful)
+            {   
+                //入力履歴の削除
+                Console.Clear();
 
-            //入力履歴の削除
-            Console.Clear();
+                //CPU側の入力
+                ChoiceCpuNumber(input);
 
-            //CPU側の入力
-            ChoiceCpuNumber(input);
-
-            //現在のボード状態を表示
-            WriteBoard(input);
-
-            turn++;
+                //現在のボード状態を表示
+                WriteBoard(input);
+            }
+        turn++;
         }
 
         //ゲーム終了メッセージの表示
@@ -64,34 +70,68 @@ public class Program
         Console.WriteLine("+---+---+---+");
     }
 
-    private static void InputNumber(string[,] input)
+    private static bool InputNumber(string[,] input)
     {
         //〇を置く場所を入力
         Console.WriteLine("どこに置きますか？（１～９）");
+
+        //空欄の確認
+        //格納するリストを作成
+        List<(int, int)> emptyCells = new List<(int, int)>();
+        for (int i = 0; i < input.GetLength(0); i++)
         {
-            List<(int, int)> emptyCells = new List<(int, int)>();
-            for (int i = 0; i < input.GetLength(0); i++)
+            for (int j = 0; j < input.GetLength(1); j++)
             {
-                for (int j = 0; j < input.GetLength(1); j++)
+                if (input[i, j] == "   ")
                 {
-                    if (input[i, j] == "   ")
-                    {
-                        emptyCells.Add((i, j));
-                    }
+                    emptyCells.Add((i, j));
                 }
             }
+        }
 
-            if (emptyCells.Count > 0)
+        //空欄の確認
+        if (emptyCells.Count > 0)
+        {
+            string inputN = Console.ReadLine();
+
+            //入力値が有効な値か確認
+            if (!string.IsNullOrEmpty(inputN) && int.TryParse(inputN, out int num))
             {
-                string inputN = Console.ReadLine();
-                int num = int.Parse(inputN);
-                int row = (num - 1) / 3;
-                int col = (num - 1) % 3;
-                input[row, col] = " ○ ";
+                //１～９の数字か確認
+                if (num >= 1 && num <= 9)
+                {
+                    int row = (num - 1) / 3;
+                    int col = (num - 1) % 3;
+
+                    //空欄の確認
+                    if (input[row, col] == "   ")
+                    {
+                        input[row, col] = " ○ ";
+                        return true;
+                    }
+                    else
+                    {
+                        Console.WriteLine("別の場所を選んでください");
+                        return false;
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("１～９の値を入力してください。");
+                    return false;
+                }
+            }
+            else
+            {
+                Console.WriteLine("無効な入力です。");
+                return false;
             }
         }
-        //入力済みの場所を選択した場合
-        //Console.WriteLine("選択済みです。別の場所を選択してください。");
+        else
+        {
+            Console.WriteLine("ゲーム終了です。");
+            return false;
+        }
     }
 
     private static void ChoiceCpuNumber(string[,] input)
@@ -121,3 +161,4 @@ public class Program
         }
     }
 }
+
