@@ -4,6 +4,8 @@ using System.Runtime.InteropServices;
 
 public class Program
 {
+    private static List<(int, int)> emptyCells = new List<(int, int)>();//空欄の情報を入れるリスト
+
     static void Main()
     {
         //CPUのレベル選択
@@ -27,11 +29,10 @@ public class Program
         //ボードの初期状態の表示
         WriteBoard(input);
 
-        //規定回数まで入力を繰り返す
-        //※修正事項　whileを消すと入力一回でゲーム終了になってしまう(優先順位：低）
+        //※修正事項　whileを消すと入力一回でゲーム終了になってしまう
         //※修正事項　ゲーム終了画面が残っているターンの数だけ表示されてしまう
         int turn = 0;
-        while (turn < 9)
+        while (turn <9 && !IsBoardFull(input))//最大入力回数または空欄の有無で繰り返し回数を決定
         {
             //ユーザー側の入力
             bool isPlayerTurnSuccessful = InputNumber(input);
@@ -77,17 +78,7 @@ public class Program
 
         //空欄の確認
         //格納するリストを作成
-        List<(int, int)> emptyCells = new List<(int, int)>();
-        for (int i = 0; i < input.GetLength(0); i++)
-        {
-            for (int j = 0; j < input.GetLength(1); j++)
-            {
-                if (input[i, j] == "   ")
-                {
-                    emptyCells.Add((i, j));
-                }
-            }
-        }
+        MakeEmptycellsList(input);
 
         //空欄の確認
         if (emptyCells.Count > 0)
@@ -140,7 +131,21 @@ public class Program
 
         //空欄の確認
         //格納するリストを作成
-        List<(int, int)> emptyCells = new List<(int, int)>();
+        MakeEmptycellsList(input);
+
+        //空欄がある場合
+        if (emptyCells.Count > 0)
+        {
+            Random n = new Random();
+            var (row, col) = emptyCells[n.Next(emptyCells.Count)];
+            input[row, col] = " × ";
+        }
+    }
+
+    private static void MakeEmptycellsList(string[,] input)
+    {
+        //空欄の確認
+        //格納するリストを作成
         for (int i = 0; i < input.GetLength(0); i++)
         {
             for (int j = 0; j < input.GetLength(1); j++)
@@ -150,14 +155,6 @@ public class Program
                     emptyCells.Add((i, j));
                 }
             }
-        }
-
-        //空欄がある場合
-        if (emptyCells.Count > 0)
-        {
-            Random n = new Random();
-            var (row, col) = emptyCells[n.Next(emptyCells.Count)];
-            input[row, col] = " × ";
         }
     }
 }
