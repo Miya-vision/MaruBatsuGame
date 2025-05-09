@@ -1,8 +1,5 @@
 ﻿// See https://aka.ms/new-console-template for more information
 
-using System.Data;
-using System.Runtime.InteropServices;
-
 public class Program
 {
     private static List<(int, int)> emptyCells = new List<(int, int)>();//空欄の情報を入れるリスト
@@ -52,6 +49,14 @@ public class Program
                 //現在のボード状態を表示
                 WriteBoard(input);
             }
+
+            /*勝敗チェック
+            if (CheckWinner(input)) 
+            {
+                Console.WriteLine("ゲーム終了です");
+            }
+            */
+
             turn++;
         }
 
@@ -59,9 +64,8 @@ public class Program
         Console.WriteLine("ゲーム終了です");
     }
 
-    private static void WriteBoard(string[,] input)
+    private static void WriteBoard(string[,] input)//〇×ゲームのボード
     {
-        //〇×ゲームのボード
         Console.WriteLine("+---+---+---+");
         Console.WriteLine($"|{input[0, 0]}|{input[0, 1]}|{input[0, 2]}|");
         Console.WriteLine("+---+---+---+");
@@ -71,7 +75,7 @@ public class Program
         Console.WriteLine("+---+---+---+");
     }
 
-    private static bool InputNumber(string[,] input)
+    private static bool InputNumber(string[,] input)//ユーザー側の入力
     {
         Console.WriteLine("どこに置きますか？（１～９）");
 
@@ -121,10 +125,8 @@ public class Program
         }
     }
 
-    private static void ChoiceCpuNumber(string[,] input)
+    private static void ChoiceCpuNumber(string[,] input)//CPU側の入力
     {
-        //CPU選択
-
         MakeEmptycellsList(input);
 
         //空欄がある場合
@@ -136,10 +138,8 @@ public class Program
         }
     }
 
-    private static void MakeEmptycellsList(string[,] input)
-    {        
-        //空欄を確認し、格納するリストを作成
-        
+    private static void MakeEmptycellsList(string[,] input)//空欄を確認し、格納するリストを作成
+    {
         //リストのリセット
         emptyCells.Clear();
 
@@ -155,11 +155,39 @@ public class Program
         }
     }
 
-    private static bool IsBoardFull(string[,] input)
+    private static bool IsBoardFull(string[,] input)//"　"が０個ならtrueを返す
     {
-        //"　"が０個ならtrueを返す
         MakeEmptycellsList(input);
         return emptyCells.Count == 0;
     }
-}
 
+    private static bool CheckWinner(string[,] input)//縦横対角線の入力チェック
+    {
+        string target = " ○ ";
+        //横列のチェック
+        for (int i = 0; i < 3; i++)
+        {
+            if (input[i, 0] == target && input[i, 1] == target && input[i, 2] == target)
+            {
+                return true;
+            }
+
+            //縦列のチェック
+            for (int j = 0; j < 3; j++)
+            {
+                if (input[0, j] == target && input[1, j] == target && input[2, j] == target)
+                {
+                    return true;
+                }
+
+                //対角線のチェック
+                if ((input[0, 0] == target && input[1, 1] == target && input[2, 2] == target)
+                        || (input[0, 2] == target && input[1, 1] == target && input[2, 0] == target))
+                {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+}
