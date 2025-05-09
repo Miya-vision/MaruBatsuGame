@@ -1,5 +1,6 @@
 ﻿// See https://aka.ms/new-console-template for more information
 
+using System.Data;
 using System.Runtime.InteropServices;
 
 public class Program
@@ -29,20 +30,19 @@ public class Program
         //ボードの初期状態の表示
         WriteBoard(input);
 
-        //※修正事項　whileを消すと入力一回でゲーム終了になってしまう
-        //※修正事項　ゲーム終了画面が残っているターンの数だけ表示されてしまう
         int turn = 0;
-        while (turn <9 && !IsBoardFull(input))//最大入力回数または空欄の有無で繰り返し回数を決定
+        //入力回数が９未満で"　"が０個ではない時ゲーム終了
+        while (turn < 9 && !IsBoardFull(input))
         {
             //ユーザー側の入力
             bool isPlayerTurnSuccessful = InputNumber(input);
-            
+
             //現在のボード状態を表示
-             WriteBoard(input);
-            
+            WriteBoard(input);
+
             //入力成功時　CPUのターン
             if (isPlayerTurnSuccessful)
-            {   
+            {
                 //入力履歴の削除
                 Console.Clear();
 
@@ -52,7 +52,7 @@ public class Program
                 //現在のボード状態を表示
                 WriteBoard(input);
             }
-        turn++;
+            turn++;
         }
 
         //ゲーム終了メッセージの表示
@@ -73,14 +73,10 @@ public class Program
 
     private static bool InputNumber(string[,] input)
     {
-        //〇を置く場所を入力
         Console.WriteLine("どこに置きますか？（１～９）");
 
-        //空欄の確認
-        //格納するリストを作成
         MakeEmptycellsList(input);
 
-        //空欄の確認
         if (emptyCells.Count > 0)
         {
             string inputN = Console.ReadLine();
@@ -94,7 +90,7 @@ public class Program
                     int row = (num - 1) / 3;
                     int col = (num - 1) % 3;
 
-                    //空欄の確認
+                    //空欄の確認　"　"なら〇が入力できる
                     if (input[row, col] == "   ")
                     {
                         input[row, col] = " ○ ";
@@ -129,8 +125,6 @@ public class Program
     {
         //CPU選択
 
-        //空欄の確認
-        //格納するリストを作成
         MakeEmptycellsList(input);
 
         //空欄がある場合
@@ -143,19 +137,29 @@ public class Program
     }
 
     private static void MakeEmptycellsList(string[,] input)
-    {
-        //空欄の確認
-        //格納するリストを作成
+    {        
+        //空欄を確認し、格納するリストを作成
+        
+        //リストのリセット
+        emptyCells.Clear();
+
         for (int i = 0; i < input.GetLength(0); i++)
         {
             for (int j = 0; j < input.GetLength(1); j++)
             {
                 if (input[i, j] == "   ")
                 {
-                    emptyCells.Add((i, j));
+                    emptyCells.Add((i, j));//"　"の数をカウントしてリストに加える
                 }
             }
         }
+    }
+
+    private static bool IsBoardFull(string[,] input)
+    {
+        //"　"が０個ならtrueを返す
+        MakeEmptycellsList(input);
+        return emptyCells.Count == 0;
     }
 }
 
