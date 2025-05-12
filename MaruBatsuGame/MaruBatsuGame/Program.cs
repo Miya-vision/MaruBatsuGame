@@ -7,75 +7,38 @@ public class Program
     static void Main()
     {
         //CPUのレベル選択
-        Console.WriteLine("CPUプレイヤーのレベルを選択してください");
-        Console.WriteLine("1.普通(Level 1)");
-        Console.WriteLine("2.上級(Level 2)");
-        string level = Console.ReadLine();
-        if (!string.IsNullOrEmpty(level) && int.TryParse(level, out int num))
+        bool isLevelInputSuccessfl = InputLevel();
+        if(!isLevelInputSuccessfl)
         {
-            //１か２の数字か確認
-            if (num >= 1 && num <= 2)
+
+            //〇×ゲームのボード作成
+            string[,] input = new string[,]
             {
-                Console.Clear();
-                Console.WriteLine("Level" + level + "を選択しました");
-            }
-            else
-            {
-                Console.WriteLine("無効な入力です");
-            }
-        }
-        //〇×ゲームのボード作成
-        string[,] input = new string[,]
-        {
             {"   ","   ","   "},
             {"   ","   ","   "},
             {"   ","   ","   "}
-        };
+            };
 
-        //ボードの初期状態の表示
-        WriteBoard(input);
+            //ボードの初期状態の表示
+            WriteBoard(input);
 
-        //難易度普通
+            //難易度普通
 
-        //int turn = 0;
-        //入力回数が９未満で"　"が０個ではない時ゲーム終了
-        while (/*turn < 9*/ !IsBoardFull(input))
-        {
-            //ユーザー側の入力
-            bool isPlayerTurnSuccessful = InputNumber(input);
-
-            //勝敗チェック
-            if (CheckWinner(input, " ○ "))
+            //int turn = 0;
+            //入力回数が９未満で"　"が０個ではない時ゲーム終了
+            while (/*turn < 9*/ !IsBoardFull(input))
             {
-                Console.Clear();
-
-                WriteBoard(input);
-
-                GameOver(" ○ ");
-
-                return;
-            }
-            else
-            {
-                WriteBoard(input);
-            }
-
-            //入力成功時　CPUのターン
-            if (isPlayerTurnSuccessful)
-            {
-                Console.Clear();
-
-                //CPU側の入力
-                ChoiceCpuNumber(input);
+                //ユーザー側の入力
+                bool isPlayerTurnSuccessful = InputNumber(input);
 
                 //勝敗チェック
-                if (CheckWinner(input, " × "))
+                if (CheckWinner(input, " ○ "))
                 {
                     Console.Clear();
 
                     WriteBoard(input);
 
-                    GameOver(" × ");
+                    GameOver(" ○ ");
 
                     return;
                 }
@@ -83,14 +46,64 @@ public class Program
                 {
                     WriteBoard(input);
                 }
-            }
-        }
-        //turn ++;
 
-        //ゲーム終了メッセージの表示
-        Console.WriteLine("引き分けです");
+                //入力成功時　CPUのターン
+                if (isPlayerTurnSuccessful)
+                {
+                    Console.Clear();
+
+                    //CPU側の入力
+                    ChoiceCpuNumber(input);
+
+                    //勝敗チェック
+                    if (CheckWinner(input, " × "))
+                    {
+                        Console.Clear();
+
+                        WriteBoard(input);
+
+                        GameOver(" × ");
+
+                        return;
+                    }
+                    else
+                    {
+                        WriteBoard(input);
+                    }
+                }
+            }
+            //turn ++;
+
+            //ゲーム終了メッセージの表示
+            Console.WriteLine("引き分けです");
+        }
+        else
+        {
+            InputLevel();
+        }
     }
 
+    private static bool InputLevel()//難易度の選択
+    {
+        Console.WriteLine("CPUプレイヤーのレベルを選択してください");
+        Console.WriteLine("1.普通(Level 1)");
+        Console.WriteLine("2.上級(Level 2)");
+
+        string level = Console.ReadLine();
+        if (!string.IsNullOrEmpty(level) && int.TryParse(level, out int levelNum) && levelNum >= 1 && levelNum <= 2)
+        {
+            Console.Clear();
+            Console.WriteLine("Level" + level + "を選択しました");
+
+            return true;
+        }
+        else
+        {
+            Console.WriteLine("無効な入力です");
+
+            return false;
+        }
+    }
     private static void WriteBoard(string[,] input)//〇×ゲームのボード
     {
         Console.WriteLine("+---+---+---+");
