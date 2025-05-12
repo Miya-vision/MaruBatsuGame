@@ -11,11 +11,19 @@ public class Program
         Console.WriteLine("1.普通(Level 1)");
         Console.WriteLine("2.上級(Level 2)");
         string level = Console.ReadLine();
-        Console.WriteLine(level);
-
-        //コンソールクリア
-        Console.Clear();
-
+        if (!string.IsNullOrEmpty(level) && int.TryParse(level, out int num))
+        {
+            //１か２の数字か確認
+            if (num >= 1 && num <= 2)
+            {
+                Console.Clear();
+                Console.WriteLine("Level" + level + "を選択しました");
+            }
+            else
+            {
+                Console.WriteLine("無効な入力です");
+            }
+        }
         //〇×ゲームのボード作成
         string[,] input = new string[,]
         {
@@ -27,8 +35,11 @@ public class Program
         //ボードの初期状態の表示
         WriteBoard(input);
 
-        int turn = 0;
-        while (turn < 9 && !IsBoardFull(input) && !CheckWinner(input, " ○ ") && !CheckWinner(input, " × "))
+        //難易度普通
+
+        //int turn = 0;
+        //入力回数が９未満で"　"が０個ではない時ゲーム終了
+        while (/*turn < 9*/ !IsBoardFull(input))
         {
             //ユーザー側の入力
             bool isPlayerTurnSuccessful = InputNumber(input);
@@ -36,36 +47,48 @@ public class Program
             //勝敗チェック
             if (CheckWinner(input, " ○ "))
             {
-                GameOver();
-            }
+                Console.Clear();
 
-            //現在のボード状態を表示
-            WriteBoard(input);
+                WriteBoard(input);
+
+                GameOver(" ○ ");
+
+                return;
+            }
+            else
+            {
+                WriteBoard(input);
+            }
 
             //入力成功時　CPUのターン
             if (isPlayerTurnSuccessful)
             {
-                //入力履歴の削除
                 Console.Clear();
 
                 //CPU側の入力
                 ChoiceCpuNumber(input);
 
-                //現在のボード状態を表示
-                WriteBoard(input);
-            }
+                //勝敗チェック
+                if (CheckWinner(input, " × "))
+                {
+                    Console.Clear();
 
-            //勝敗チェック
-            if (CheckWinner(input, " × "))
-            {
-                GameOver();
-            }
+                    WriteBoard(input);
 
-            turn++;
+                    GameOver(" × ");
+
+                    return;
+                }
+                else
+                {
+                    WriteBoard(input);
+                }
+            }
         }
+        //turn ++;
 
         //ゲーム終了メッセージの表示
-        GameOver();
+        Console.WriteLine("引き分けです");
     }
 
     private static void WriteBoard(string[,] input)//〇×ゲームのボード
@@ -195,8 +218,8 @@ public class Program
         return false;
     }
 
-    private static void GameOver()//「ゲーム終了です」と表示
+    private static void GameOver(string result)//「ゲーム終了です」と表示
     {
-        Console.WriteLine("ゲーム終了です");
+        Console.WriteLine("ゲーム終了、" + result + "の勝ちです");
     }
 }
