@@ -28,11 +28,16 @@ public class Program
         WriteBoard(input);
 
         int turn = 0;
-        //入力回数が９未満で"　"が０個ではない時ゲーム終了
-        while (turn < 9 && !IsBoardFull(input))
+        while (turn < 9 && !IsBoardFull(input) && !CheckWinner(input, " ○ ") && !CheckWinner(input, " × "))
         {
             //ユーザー側の入力
             bool isPlayerTurnSuccessful = InputNumber(input);
+
+            //勝敗チェック
+            if (CheckWinner(input, " ○ "))
+            {
+                GameOver();
+            }
 
             //現在のボード状態を表示
             WriteBoard(input);
@@ -50,18 +55,17 @@ public class Program
                 WriteBoard(input);
             }
 
-            /*勝敗チェック
-            if (CheckWinner(input)) 
+            //勝敗チェック
+            if (CheckWinner(input, " × "))
             {
-                Console.WriteLine("ゲーム終了です");
+                GameOver();
             }
-            */
 
             turn++;
         }
 
         //ゲーム終了メッセージの表示
-        Console.WriteLine("ゲーム終了です");
+        GameOver();
     }
 
     private static void WriteBoard(string[,] input)//〇×ゲームのボード
@@ -161,9 +165,8 @@ public class Program
         return emptyCells.Count == 0;
     }
 
-    private static bool CheckWinner(string[,] input)//縦横対角線の入力チェック
+    private static bool CheckWinner(string[,] input, string target)//縦横対角線の入力チェック
     {
-        string target = " ○ ";
         //横列のチェック
         for (int i = 0; i < 3; i++)
         {
@@ -171,23 +174,29 @@ public class Program
             {
                 return true;
             }
+        }
 
-            //縦列のチェック
-            for (int j = 0; j < 3; j++)
+        //縦列のチェック
+        for (int j = 0; j < 3; j++)
+        {
+            if (input[0, j] == target && input[1, j] == target && input[2, j] == target)
             {
-                if (input[0, j] == target && input[1, j] == target && input[2, j] == target)
-                {
-                    return true;
-                }
-
-                //対角線のチェック
-                if ((input[0, 0] == target && input[1, 1] == target && input[2, 2] == target)
-                        || (input[0, 2] == target && input[1, 1] == target && input[2, 0] == target))
-                {
-                    return true;
-                }
+                return true;
             }
         }
+
+        //対角線のチェック
+        if ((input[0, 0] == target && input[1, 1] == target && input[2, 2] == target)
+                || (input[0, 2] == target && input[1, 1] == target && input[2, 0] == target))
+        {
+            return true;
+        }
+
         return false;
+    }
+
+    private static void GameOver()//「ゲーム終了です」と表示
+    {
+        Console.WriteLine("ゲーム終了です");
     }
 }
