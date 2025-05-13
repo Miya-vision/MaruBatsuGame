@@ -1,8 +1,11 @@
 ﻿// See https://aka.ms/new-console-template for more information
 
+using System.Runtime.CompilerServices;
+
 public class Program
 {
     private static List<(int, int)> emptyCells = new List<(int, int)>();//空欄の情報を入れるリスト
+    private static int cpuLevel = 0;//CPUの難易度を保存
 
     static void Main()
     {
@@ -29,7 +32,6 @@ public class Program
         WriteBoard(input);
 
         //難易度普通
-
         //int turn = 0;
         //入力回数が９未満で"　"が０個ではない時ゲーム終了
         while (/*turn < 9*/ !IsBoardFull(input))
@@ -93,6 +95,7 @@ public class Program
         string level = Console.ReadLine();
         if (!string.IsNullOrEmpty(level) && int.TryParse(level, out int levelNum) && levelNum >= 1 && levelNum <= 2)
         {
+            cpuLevel = levelNum;
             Console.Clear();
             Console.WriteLine("Level" + level + "を選択しました");
 
@@ -103,6 +106,7 @@ public class Program
             return false;
         }
     }
+
     private static void WriteBoard(string[,] input)//〇×ゲームのボード
     {
         Console.WriteLine("+---+---+---+");
@@ -167,13 +171,38 @@ public class Program
     private static void ChoiceCpuNumber(string[,] input)//CPU側の入力
     {
         MakeEmptycellsList(input);
+        List<(int, int)> cornerList = new List<(int, int)> { (0, 0), (0, 2), (2, 0), (2, 2) };
 
-        //空欄がある場合
+
         if (emptyCells.Count > 0)
         {
-            Random n = new Random();
-            var (row, col) = emptyCells[n.Next(emptyCells.Count)];
-            input[row, col] = " × ";
+            if (cpuLevel == 1)
+            {
+                Random n = new Random();
+                var (row, col) = emptyCells[n.Next(emptyCells.Count)];
+                input[row, col] = " × ";
+            }
+
+            if (cpuLevel == 2)
+            {
+                if (input[1, 1] == "   ")
+                {
+                    input[1, 1] = " × ";
+                }
+                else if(cornerList.Count > 0 && input[row, col] == "   ")
+                {
+                    Random n = new Random();
+                    var (row, col) = cornerList[n.Next(cornerList.Count)];
+                    input[row, col] = " × ";
+                }
+                else
+                {
+                    Random n = new Random();
+                    var (row, col) = emptyCells[n.Next(emptyCells.Count)];
+                    input[row, col] = " × ";
+
+                }
+            }
         }
     }
 
