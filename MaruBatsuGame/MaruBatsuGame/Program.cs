@@ -234,10 +234,12 @@ public class Program
     }
 
     private static bool CheckWinner(int[,] state, int target)//縦横対角線の入力チェック
-                                                             //→勝ちパターンのチェックに変更【123,456,789,147,258,369,159,257】の８パターン
+
+    //→勝ちパターンのチェックに変更【123,456,789,147,258,369,159,257】の８パターン
+
     {
-            //横列のチェック
-            for (int i = 0; i < 3; i++)
+        //横列のチェック
+        for (int i = 0; i < 3; i++)
         {
             if (state[i, 0] == target && state[i, 1] == target && state[i, 2] == target)
             {
