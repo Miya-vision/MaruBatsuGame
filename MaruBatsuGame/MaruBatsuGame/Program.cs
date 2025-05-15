@@ -24,8 +24,6 @@ public class Program
         }
 
         //〇×ゲームのボード作成
-
-        //盤面の状態を空白付きで保持しているが、0,1,2などで持った方がよい→0:初期値,1:1Pの置き場所,2:2Pの置き場所
         int[,] state = new int[,]
         {
             {0, 0, 0},
@@ -36,7 +34,6 @@ public class Program
         //ボードの初期状態の表示
         WriteBoard(state);
 
-        //int turn = 0;
         //入力が1Pと2Pが置いたことで1ループとなっているので、概念が少し歪になっている。１コマで１ループがよい
         while (/*turn < 9*/ !IsBoardFull(state))
         {
@@ -84,7 +81,6 @@ public class Program
                 }
             }
         }
-        //turn ++;
 
         //ゲーム終了メッセージの表示
         Console.WriteLine("引き分けです");
@@ -114,12 +110,29 @@ public class Program
     private static void WriteBoard(int[,] state)//〇×ゲームのボード
     {
         Console.WriteLine("+---+---+---+");
-        Console.WriteLine($"|{state[0, 0]}|{state[0, 1]}|{state[0, 2]}|");
-        Console.WriteLine("+---+---+---+");
-        Console.WriteLine($"|{state[1, 0]}|{state[1, 1]}|{state[1, 2]}|");
-        Console.WriteLine("+---+---+---+");
-        Console.WriteLine($"|{state[2, 0]}|{state[2, 1]}|{state[2, 2]}|");
-        Console.WriteLine("+---+---+---+");
+        for (int i = 0; i < state.GetLength(0); i++)
+        {
+            Console.Write("|");
+
+            for (int j = 0; j < state.GetLength(1); j++)
+            {
+                Console.Write(state[i, j] == 0 ? "　 " : state[i, j] == 1 ? " ○ " : " × ");
+                Console.Write("|");
+            }
+            Console.WriteLine("");
+            Console.WriteLine("+---+---+---+");
+        }
+
+
+        /*
+                Console.WriteLine("+---+---+---+");
+                Console.WriteLine($"|{state[0, 0]}|{state[0, 1]}|{state[0, 2]}|");
+                Console.WriteLine("+---+---+---+");
+                Console.WriteLine($"|{state[1, 0]}|{state[1, 1]}|{state[1, 2]}|");
+                Console.WriteLine("+---+---+---+");
+                Console.WriteLine($"|{state[2, 0]}|{state[2, 1]}|{state[2, 2]}|");
+                Console.WriteLine("+---+---+---+");
+        */
     }
 
     private static bool InputNumber(int[,] state)//プレイヤー側の入力
@@ -138,7 +151,7 @@ public class Program
                 //１～９の数字か確認
                 if (num >= 1 && num <= 9)
                 {
-                    int row = (num - 1) / 3;
+                    int row = (num - 1) / 3;//座標の位置決め
                     int col = (num - 1) % 3;
 
                     //空欄の確認　0なら入力できる
@@ -176,7 +189,7 @@ public class Program
                                                      //→優先順位　５のマスをとる＞４隅をとる＞相手の勝ちを阻止する>ダブルリーチの状態を作る
     {
         MakeEmptycellsList(state);
-        var cornerList = new List<(int, int)> { (0, 0), (0, 2), (2, 0), (2, 2) };
+        //var cornerList = new List<(int, int)> { (0, 0), (0, 2), (2, 0), (2, 2) };
 
         if (emptyCells.Count > 0)
         {
@@ -193,12 +206,12 @@ public class Program
                 {
                     state[1, 1] = 2;
                 }
-                else if (cornerList.Count > 0)//４隅を優先的に入力
+                /*else if (cornerList.Count > 0)//４隅を優先的に入力
                 {
                     Random n = new Random();
                     var (row, col) = cornerList[n.Next(cornerList.Count)];
                     state[row, col] = 2;
-                }
+                }*/
                 else
                 {
                     Random n = new Random();
