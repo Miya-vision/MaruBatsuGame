@@ -1,5 +1,7 @@
 ﻿// See https://aka.ms/new-console-template for more information
 
+using System.Xml.Schema;
+
 public class Program
 {
     //playerクラス　CPUクラス（強弱2パターン）を作成
@@ -107,16 +109,16 @@ public class Program
         }
     }
 
-    private static void WriteBoard(int[,] state)//〇×ゲームのボード
+    private static void WriteBoard(int[,] state)//〇×ゲームのボードの状態を表示
     {
-        Console.WriteLine("+---+---+---+");
+        Console.WriteLine("+---+---+---+");//配列の要素を順番に調べて値を取得
         for (int i = 0; i < state.GetLength(0); i++)
         {
             Console.Write("|");
 
             for (int j = 0; j < state.GetLength(1); j++)
             {
-                Console.Write(state[i, j] == 0 ? "　 " : state[i, j] == 1 ? " ○ " : " × ");
+                Console.Write(state[i, j] == 0 ? "　 " : state[i, j] == 1 ? " ○ " : " × ");//stateの数字を確認して○、×、＿へ変換
                 Console.Write("|");
             }
             Console.WriteLine("");
@@ -124,7 +126,7 @@ public class Program
         }
 
 
-        /*
+        /*後で消す
                 Console.WriteLine("+---+---+---+");
                 Console.WriteLine($"|{state[0, 0]}|{state[0, 1]}|{state[0, 2]}|");
                 Console.WriteLine("+---+---+---+");
@@ -151,7 +153,8 @@ public class Program
                 //１～９の数字か確認
                 if (num >= 1 && num <= 9)
                 {
-                    int row = (num - 1) / 3;//座標の位置決め
+                    //座標の位置決め
+                    int row = (num - 1) / 3;
                     int col = (num - 1) % 3;
 
                     //空欄の確認　0なら入力できる
@@ -249,8 +252,26 @@ public class Program
     private static bool CheckWinner(int[,] state, int target)//縦横対角線の入力チェック
 
     //→勝ちパターンのチェックに変更【123,456,789,147,258,369,159,257】の８パターン
+    //全ての要素をチェックする必要はない　勝ちパターンの８つが知りたい
 
     {
+        //勝ちパターンの8個の配列を作成
+        int[][] winPatterns =
+        {
+            new [] {0, 1, 2},
+            new [] {3, 4, 5},
+            new [] {6, 7, 8},
+            new [] {0, 3, 6},
+            new [] {1, 4, 7},
+            new [] {2, 5, 8},
+            new [] {0, 4, 8},
+            new [] {2, 4, 6}
+        };
+        int[] conversionState = state.Cast<int>().ToArray();        
+        return winPatterns.Any(pattern => pattern.All(Index => conversionState[Index] == target));
+
+
+        /*
         //横列のチェック
         for (int i = 0; i < 3; i++)
         {
@@ -277,6 +298,7 @@ public class Program
         }
 
         return false;
+        */
     }
 
     private static void GameOver(int result)//「ゲーム終了です」と表示
