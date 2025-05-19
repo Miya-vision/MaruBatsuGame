@@ -1,7 +1,5 @@
 ﻿// See https://aka.ms/new-console-template for more information
 
-using System.Xml.Schema;
-
 public class Program
 {
     //playerクラス　CPUクラス（強弱2パターン）を作成
@@ -15,6 +13,10 @@ public class Program
         // CPUのレベル選択
         while (true)
         {
+            Console.WriteLine("CPUプレイヤーのレベルを選択してください");
+            Console.WriteLine("1.普通(Level 1)");
+            Console.WriteLine("2.上級(Level 2)");
+
             if (InputLevel())
             {
                 break;
@@ -90,10 +92,6 @@ public class Program
 
     private static bool InputLevel()//難易度の選択
     {
-        Console.WriteLine("CPUプレイヤーのレベルを選択してください");
-        Console.WriteLine("1.普通(Level 1)");
-        Console.WriteLine("2.上級(Level 2)");
-
         string level = Console.ReadLine();
         if (!string.IsNullOrEmpty(level) && int.TryParse(level, out int levelNum) && levelNum >= 1 && levelNum <= 2)
         {
@@ -249,13 +247,8 @@ public class Program
         return emptyCells.Count == 0;
     }
 
-    private static bool CheckWinner(int[,] state, int target)//縦横対角線の入力チェック
-
-    //→勝ちパターンのチェックに変更【123,456,789,147,258,369,159,257】の８パターン
-    //全ての要素をチェックする必要はない　勝ちパターンの８つが知りたい
-
+    private static bool CheckWinner(int[,] state, int target)//勝ちパターンの8個の配列を作成して勝敗チェック
     {
-        //勝ちパターンの8個の配列を作成
         int[][] winPatterns =
         {
             new [] {0, 1, 2},
@@ -267,11 +260,10 @@ public class Program
             new [] {0, 4, 8},
             new [] {2, 4, 6}
         };
-        int[] conversionState = state.Cast<int>().ToArray();        
+        int[] conversionState = state.Cast<int>().ToArray();
         return winPatterns.Any(pattern => pattern.All(Index => conversionState[Index] == target));
 
-
-        /*
+        /*後で消す
         //横列のチェック
         for (int i = 0; i < 3; i++)
         {
