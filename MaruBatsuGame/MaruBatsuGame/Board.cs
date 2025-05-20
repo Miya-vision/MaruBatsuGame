@@ -1,4 +1,6 @@
-﻿namespace MaruBatsuGame
+﻿using static MaruBatsuGame.PlayerBase;
+
+namespace MaruBatsuGame
 {
     internal class Board
     {
@@ -25,13 +27,31 @@
                 for (int j = 0; j < state.GetLength(1); j++)
                 {
                     //stateの数字を確認して○、×、＿へ変換
-                    Console.Write(state[i, j] == 0 ? "　 " : state[i, j] == 1 ? " ○ " : " × ");
+                    Console.Write(state[i, j] == (int)PlayerType.None ? "　 " : state[i, j] == (int)PlayerType.FirstPlayer ? " ○ " : " × ");
                     Console.Write("|");
                 }
                 Console.WriteLine("");
                 Console.WriteLine("+---+---+---+");
             }
         }
-    }
 
+        //勝ちパターンの8個の配列を作成して勝敗チェック
+        public static bool CheckWinner(int[,] state, int target)
+        {
+            int[][] winPatterns =
+            {
+            new [] {0, 1, 2},
+            new [] {3, 4, 5},
+            new [] {6, 7, 8},
+            new [] {0, 3, 6},
+            new [] {1, 4, 7},
+            new [] {2, 5, 8},
+            new [] {0, 4, 8},
+            new [] {2, 4, 6}
+        };
+            int[] conversionState = state.Cast<int>().ToArray();
+
+            return winPatterns.Any(pattern => pattern.All(Index => conversionState[Index] == target));
+        }
+    }
 }

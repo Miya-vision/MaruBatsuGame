@@ -1,84 +1,97 @@
-﻿namespace MaruBatsuGame
+﻿using static MaruBatsuGame.PlayerBase;
+
+namespace MaruBatsuGame
 {
-    internal class GameManager
+    public class GameManager
     {
         public static void PlayGame()
         {
-            while (/*turn < 9*/ !PlayerBase.IsBoardFull(Board.state))
+            /*------------------------------------------------------------------
+            ※入力が1Pと2Pが置いたことで1ループとなっているので、概念が少し歪になっている。１コマで１ループがよい
+
+            空欄部分チェック（共通項目）
+            ↓                
+            入力（個別項目有り）
+            入力までの手順は違えど結果は同じように空欄部分への入力
+            ターン制入力にすればプレイヤー側の入力成功チェックがいらなくなる？
+            今誰のターンなのかステータスを保持してそれを受け渡す？　P＝１　C＝２左←ダメ
+            先攻後攻を選ぶ仕様にするのならプレイヤーだからCPUだからと固定せずに
+            単純に先攻は１後攻は２などのようにするべき？
+            数字はわかりにくいFirstPlayer,SecondPlayerにする？
+            定数作ると管理が楽？const?enum?
+            ↓
+            勝敗チェック（共通項目）
+            「～の勝ちです」と表示
+            ステータスの受け渡しで勝敗のメッセージに対応できる？
+            ↓
+            勝負がつかなかった場合は引き分けの表示
+            ------------------------------------------------------------------
+            */
+
+            //PlayerクラスとCpuクラスのインスタンス生成
+            Player player = new Player();
+            Cpu cpu = new Cpu();
+
+            /// <summary>
+            /// ゲーム開始時に、先攻プレイヤーを現行プレイヤーとしてセット
+            /// プレイヤーのターン管理に使用され、交代時に更新される
+            /// </summary>
+            int CurrentPlayer = (int)PlayerType.FirstPlayer;
+
+            //初期状態のボードの表示
+            Board.WriteBoard(Board.state);
+
+            //空欄がなくなるまで繰り返す
+            while (!PlayerBase.IsBoardFull(Board.state))
             {
-                /*入力が1Pと2Pが置いたことで1ループとなっているので、概念が少し歪になっている。１コマで１ループがよい
-                空欄部分チェック
-                ↓                
-                入力　入力までの手順は違えど結果は同じように空欄部分への入力
-                ターン制入力にすればプレイヤー側の入力成功チェックがいらなくなる？
-                ↓
-                勝敗チェック　「～の勝ちです」と表示
-                ↓
-                勝負がつかなかった場合は引き分けの表示
-                 */
+                /// <summary>いらない？　なくても動く　消す
+                /// ボードの状態をもとに、空欄セルのリストを更新
+                /// 空きマスの管理に使用され、プレイヤーの選択可能な位置を決定
+                /// </summary>
+                //PlayerBase.UpdateEmptyCells(Board.state);
 
-                //プレイヤー側の入力
-                bool isPlayerTurnSuccessful = Player.InputNumber(Board.state);
-
-                //勝敗チェック
-                if (CheckWinner(Board.state, 1))
+                //入力
+                if (CurrentPlayer == (int)PlayerType.FirstPlayer)
                 {
-                    Console.Clear();
-
-                    Board.WriteBoard(Board.state);
-
-                    GameOver(1);
-
-                    return;
+                    Player.PlayerChoiceNumber(Board.state);
                 }
                 else
                 {
-                    Board.WriteBoard(Board.state);
+                    Cpu.ChoiceCpuNumber(Board.state);
                 }
 
-                //入力成功時　CPUのターン
-                if (isPlayerTurnSuccessful)
+                //勝敗判定　勝利決定時即終了
+                if (Board.CheckWinner(Board.state, CurrentPlayer))
                 {
                     Console.Clear();
 
-                    //CPU側の入力
-                    Cpu.ChoiceCpuNumber(Board.state);
+                    Board.WriteBoard(Board.state);
 
-                    //勝敗チェック
-                    if (CheckWinner(Board.state, 2))
-                    {
-                        Console.Clear();
+                    //勝敗決定時には現行プレイヤーの名前
+                    GameOver(CurrentPlayer);
 
-                        Board.WriteBoard(Board.state);
-
-                        GameOver(2);
-
-                        return;
-                    }
-                    else
-                    {
-                        Board.WriteBoard(Board.state);
-                    }
+                    return;
                 }
-            }
-        }
 
-        //勝ちパターンの8個の配列を作成して勝敗チェック
-        public static bool CheckWinner(int[,] state, int target)
-        {
-            int[][] winPatterns =
-            {
-            new [] {0, 1, 2},
-            new [] {3, 4, 5},
-            new [] {6, 7, 8},
-            new [] {0, 3, 6},
-            new [] {1, 4, 7},
-            new [] {2, 5, 8},
-            new [] {0, 4, 8},
-            new [] {2, 4, 6}
-        };
-            int[] conversionState = state.Cast<int>().ToArray();
-            return winPatterns.Any(pattern => pattern.All(Index => conversionState[Index] == target));
+                Console.Clear();
+
+                Board.WriteBoard(Board.state);
+
+                //ターン交代　現行プレイヤーがFirstならSecondへ
+                if (CurrentPlayer == (int)PlayerType.FirstPlayer)
+                {
+                    CurrentPlayer = (int)PlayerType.SecondPlayer;
+                }
+                else
+                {
+                    CurrentPlayer = (int)PlayerType.FirstPlayer;
+                }
+
+            }
+
+            //【引き分け】
+            Console.WriteLine("ゲーム終了、引き分けです");
+
         }
 
         //「ゲーム終了です」と表示

@@ -1,15 +1,21 @@
 ﻿namespace MaruBatsuGame
 {
     internal class PlayerBase
-    {   //0が０個ならtrueを返す
-        public static bool IsBoardFull(int[,] state)
+
+    {
+        /// <summary>
+        /// ゲーム内のプレイヤーの役割を表す列挙型
+        /// 先攻・後攻を識別し、ボードへの入力時に使用される
+        /// </summary>
+        public enum PlayerType
         {
-            MakeEmptycellsList(state);
-            return Board.emptyCells.Count == 0;
+            None = 0,//空欄
+            FirstPlayer = 1,//先攻
+            SecondPlayer = 2//後攻
         }
 
         //空欄を確認し、格納するリストを作成
-        public static void MakeEmptycellsList(int[,] state)
+        public static void UpdateEmptyCells(int[,] state)
         {
             //リストのリセット
             Board.emptyCells.Clear();
@@ -20,11 +26,18 @@
                 {
                     if (state[i, j] == 0)
                     {
-                        //0の数をカウントしてリストに加える
+                        //空欄の数をカウントしてリストに加える
                         Board.emptyCells.Add((i, j));
                     }
                 }
             }
+        }
+
+        //空欄なしの場合trueを返す
+        public static bool IsBoardFull(int[,] state)
+        {
+            UpdateEmptyCells(state);
+            return Board.emptyCells.Count == 0;
         }
     }
 }

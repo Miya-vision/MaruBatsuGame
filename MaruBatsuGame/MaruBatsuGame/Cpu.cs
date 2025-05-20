@@ -4,11 +4,29 @@
     {
         private static int cpuLevel = 0;
 
+        public static bool InputLevel()//難易度の選択
+        {
+            string level = Console.ReadLine();
+
+            if (!string.IsNullOrEmpty(level) && int.TryParse(level, out int levelNum) && levelNum >= 1 && levelNum <= 2)
+            {
+                cpuLevel = levelNum;
+                Console.Clear();
+                Console.WriteLine("Level" + level + "を選択しました");
+
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
         //CPU側の入力
         //→優先順位　５のマスをとる＞４隅をとる＞相手の勝ちを阻止する>ダブルリーチの状態を作る
         public static void ChoiceCpuNumber(int[,] state)
         {
-            MakeEmptycellsList(state);
+            PlayerBase.UpdateEmptyCells(state);
             //var cornerList = new List<(int, int)> { (0, 0), (0, 2), (2, 0), (2, 2) };
 
             if (Board.emptyCells.Count > 0)
