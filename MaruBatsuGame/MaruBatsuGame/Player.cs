@@ -8,7 +8,6 @@
         public static void PlayerChoiceNumber(int[,] state)
         {
 
-
             if (0 == Board.emptyCells.Count)
             {
                 Console.WriteLine("ゲーム終了です。");

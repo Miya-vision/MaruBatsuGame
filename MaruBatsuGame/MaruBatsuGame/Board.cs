@@ -48,7 +48,8 @@ namespace MaruBatsuGame
             new [] {2, 5, 8},
             new [] {0, 4, 8},
             new [] {2, 4, 6}
-        };
+            };
+
             int[] conversionState = state.Cast<int>().ToArray();
 
             return winPatterns.Any(pattern => pattern.All(Index => conversionState[Index] == target));
