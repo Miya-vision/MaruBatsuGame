@@ -4,21 +4,29 @@
     {
         private static int cpuLevel = 0;
 
-        public static bool InputLevel()//難易度の選択
+        public static void InputLevel()//難易度の選択
         {
-            string level = Console.ReadLine();
-
-            if (!string.IsNullOrEmpty(level) && int.TryParse(level, out int levelNum) && levelNum >= 1 && levelNum <= 2)
+            while (true)
             {
-                cpuLevel = levelNum;
-                Console.Clear();
-                Console.WriteLine("Level" + level + "を選択しました");
+                Console.WriteLine("CPUプレイヤーのレベルを選択してください");
+                Console.WriteLine("1.普通(Level 1)");
+                Console.WriteLine("2.上級(Level 2)");
+                Console.Write("番号を入力してください: ");
 
-                return true;
-            }
-            else
-            {
-                return false;
+                string level = Console.ReadLine();
+
+                if (!string.IsNullOrEmpty(level) && int.TryParse(level, out int levelNum) && levelNum >= 1 && levelNum <= 2)
+                {
+                    cpuLevel = levelNum;
+                    Console.Clear();
+                    Console.WriteLine("Level" + level + "を選択しました");
+
+                    break;
+                }
+                else
+                {
+                    Console.WriteLine("無効な入力です。もう一度選択してください。");
+                }
             }
         }
 

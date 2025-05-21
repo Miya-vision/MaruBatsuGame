@@ -1,31 +1,25 @@
 ﻿// See https://aka.ms/new-console-template for more information
 
-using MaruBatsuGame;
-
-public class Program
+namespace MaruBatsuGame
 {
-    static void Main()
+    public class Program
     {
-        // CPUのレベル選択
-        while (true)
+        static void Main()
         {
-            Console.WriteLine("CPUプレイヤーのレベルを選択してください");
-            Console.WriteLine("1.普通(Level 1)");
-            Console.WriteLine("2.上級(Level 2)");
+            // CPUのレベル選択
+            Cpu.InputLevel();
 
-            if (Cpu.InputLevel())
-            {
-                break;
-            }
-            else
-            {
-                Console.WriteLine("無効な入力です。もう一度入力してください。");
-            }
+            ///<summary>
+            ///先攻・後攻の選択を行い、GameManagerで startingPlayerNumに選択時の値を代入
+            ///【1】 先攻: FirstPlayer
+            ///【2】 後攻: SecondPlayer
+            /// </summary>
+            int startingPlayerNum = PlayerBase.startingTurnChoice();
+
+            //ゲームのメイン操作
+            GameManager.PlayGame(startingPlayerNum);
+
         }
-
-        //ゲームのメイン操作
-        GameManager.PlayGame();
-
     }
 }
 

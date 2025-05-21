@@ -2,7 +2,6 @@
 {
     internal class Player : PlayerBase
     {
-        Board board = new Board();
 
         //プレイヤー側の入力
         public static void PlayerChoiceNumber(int[,] state)
