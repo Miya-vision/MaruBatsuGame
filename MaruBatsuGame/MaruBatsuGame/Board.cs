@@ -54,5 +54,13 @@ namespace MaruBatsuGame
 
             return winPatterns.Any(pattern => pattern.All(Index => conversionState[Index] == target));
         }
+
+        //勝ち確チェック
+        public static void CheckWinPattern(int[,] state, int playerType)
+        {
+            //対象のプレイヤーが置いた位置を確認したのちに、勝ちパターンと照らし合わせて呼び出し元に返す
+
+            return;
+        }
     }
 }
