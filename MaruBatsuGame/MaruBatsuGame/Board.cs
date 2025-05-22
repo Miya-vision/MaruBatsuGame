@@ -1,13 +1,14 @@
-﻿using static MaruBatsuGame.PlayerBase;
+﻿using System.ComponentModel.Design;
+using static MaruBatsuGame.PlayerBase;
 
 namespace MaruBatsuGame
 {
     internal class Board
     {
-        //空欄の情報を入れるリスト
+        // 空欄の情報を入れるリスト
         public static List<(int, int)> emptyCells = new List<(int, int)>();
 
-        //〇×ゲームのボード作成
+        // 〇×ゲームのボード作成
         public static int[,] state = new int[,]
         {
             {0, 0, 0},
@@ -15,10 +16,10 @@ namespace MaruBatsuGame
             {0, 0, 0}
         };
 
-        //〇×ゲームのボードの状態を表示
+        // 〇×ゲームのボードの状態を表示
         public static void WriteBoard(int[,] state)
         {
-            //配列の要素を順番に調べて値を取得
+            // 配列の要素を順番に調べて値を取得
             Console.WriteLine("+---+---+---+");
             for (int i = 0; i < state.GetLength(0); i++)
             {
@@ -26,41 +27,113 @@ namespace MaruBatsuGame
 
                 for (int j = 0; j < state.GetLength(1); j++)
                 {
-                    //stateの数字を確認して○、×、＿へ変換
+                    // stateの数字を確認して○、×、＿へ変換
                     Console.Write(state[i, j] == (int)PlayerType.None ? "　 " : state[i, j] == (int)PlayerType.FirstPlayer ? " ○ " : " × ");
                     Console.Write("|");
                 }
-                Console.WriteLine("");
+                Console.WriteLine("");// 改行
                 Console.WriteLine("+---+---+---+");
             }
         }
 
-        //勝ちパターンの8個の配列を作成して勝敗チェック
-        public static bool CheckWinner(int[,] state, int target)
+        // 空欄を確認し、格納するリストを作成
+        public static void UpdateEmptyCells(int[,] state)
         {
-            int[][] winPatterns =
+            // リストのリセット
+            Board.emptyCells.Clear();
+
+            for (int i = 0; i < state.GetLength(0); i++)
             {
-            new [] {0, 1, 2},
-            new [] {3, 4, 5},
-            new [] {6, 7, 8},
-            new [] {0, 3, 6},
-            new [] {1, 4, 7},
-            new [] {2, 5, 8},
-            new [] {0, 4, 8},
-            new [] {2, 4, 6}
-            };
-
-            int[] conversionState = state.Cast<int>().ToArray();
-
-            return winPatterns.Any(pattern => pattern.All(Index => conversionState[Index] == target));
+                for (int j = 0; j < state.GetLength(1); j++)
+                {
+                    if (state[i, j] == 0)
+                    {
+                        // 空欄の数をカウントしてリストに加える
+                        Board.emptyCells.Add((i, j));
+                    }
+                }
+            }
         }
 
-        //勝ち確チェック
-        public static void CheckWinPattern(int[,] state, int playerType)
+        // 空欄なしの場合trueを返す
+        public static bool IsBoardFull(int[,] state)
         {
-            //対象のプレイヤーが置いた位置を確認したのちに、勝ちパターンと照らし合わせて呼び出し元に返す
+            UpdateEmptyCells(state);
+            return Board.emptyCells.Count == 0;
+        }
 
-            return;
+        //勝ちパターンリストの作成
+        public static List<List<(int, int)>> GetWinPatterns()
+        {
+            return new List<List<(int, int)>>
+            {
+                new List<(int, int)> { (0, 0), (0, 1), (0, 2) },
+                new List<(int, int)> { (1, 0), (1, 1), (1, 2) },
+                new List<(int, int)> { (2, 0), (2, 1), (2, 2) },
+                new List<(int, int)> { (0, 0), (1, 0), (2, 0) },
+                new List<(int, int)> { (0, 1), (1, 1), (2, 1) },
+                new List<(int, int)> { (0, 2), (1, 2), (2, 2) },
+                new List<(int, int)> { (0, 0), (1, 1), (2, 2) },
+                new List<(int, int)> { (0, 2), (1, 1), (2, 0) }
+            };
+        }
+
+        // 勝者を判定するメソッド
+        public static bool CheckWinner(int[,] state, int target)
+        {
+            // 勝ちパターンの取得
+            var winPatterns = GetWinPatterns();
+
+            // 各勝ちパターンと現在の盤面を比較
+            foreach (var pattern in winPatterns)
+            {
+                if (pattern.All(cell => state[cell.Item1, cell.Item2] == target))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        //次の手で勝つか確認
+        public static (int, int)? GetStrategicMove(int[,] state, PlayerType targetPlayer)
+        {
+            //勝ちパターンを取得
+            var winPatterns = GetWinPatterns();
+
+            // 置いた位置と勝ちパターンに該当するか確認して優先的に置くか判断
+            foreach (var pattern in winPatterns)
+            {
+                // 置いた位置の数を保存
+                int countTargetPlayer = 0;
+
+                // 空欄の位置を格納
+                (int, int)? emptyCell = null;
+
+                // 置いた位置と勝ちパターンをチェック
+                foreach (var (row, col) in pattern)
+                {
+                    // 置いた位置の数を数える
+                    if (state[row, col] == (int)targetPlayer)
+                    {
+                        countTargetPlayer++;
+                    }
+                    // 空欄の位置の取得
+                    else if (state[row, col] == (int)PlayerType.None)
+                    {
+                        emptyCell = (row, col);
+                    }
+                }
+
+                // ２手以上＋空欄が値を持っている場合（＝次で勝てる状態）
+                if (countTargetPlayer == 2 && emptyCell.HasValue)
+                {
+                    // 空いている位置を返す。
+                    return emptyCell;
+                }
+            }
+            return null;
         }
     }
 }

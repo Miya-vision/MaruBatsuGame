@@ -9,14 +9,11 @@ namespace MaruBatsuGame
             // CPUのレベル選択
             Cpu.InputLevel();
 
-            ///<summary>
-            ///先攻・後攻の選択を行い、GameManagerで startingPlayerNumに選択時の値を代入
-            ///【1】 先攻: FirstPlayer
-            ///【2】 後攻: SecondPlayer
-            /// </summary>
+            // 先攻・後攻の選択を行い、GameManagerで startingPlayerNumに選択時の値を代入
+            //【1】 先攻: FirstPlayer　【2】 後攻: SecondPlayer
             int startingPlayerNum = PlayerBase.startingTurnChoice();
 
-            //ゲームのメイン操作
+            // ゲームのメイン操作
             GameManager.PlayGame(startingPlayerNum);
 
         }
