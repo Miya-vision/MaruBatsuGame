@@ -96,25 +96,30 @@ namespace MaruBatsuGame
             return false;
         }
 
-        //次の手で勝つか確認
+        /// <summary>
+        /// 盤面の状態を確認し、次の一手で勝てる場合の座標を返す。
+        /// もし勝てる手がない場合は、null を返す。
+        /// </summary>
         public static (int, int)? GetStrategicMove(int[,] state, PlayerType targetPlayer)
         {
             //勝ちパターンを取得
             var winPatterns = GetWinPatterns();
 
-            // 置いた位置と勝ちパターンに該当するか確認して優先的に置くか判断
+            // ○,×が置いてある位置の確認
+            // 勝ちパターンに該当するか確認
+            // →優先的に置くか判断する
             foreach (var pattern in winPatterns)
             {
-                // 置いた位置の数を保存
+                // 勝ちパターン内の自分のマークの数
                 int countTargetPlayer = 0;
 
-                // 空欄の位置を格納
+                // 空欄の位置（最後の一手で勝てる場所）
                 (int, int)? emptyCell = null;
 
-                // 置いた位置と勝ちパターンをチェック
+                // ○,×が置いてある位置から次の手が勝ちパターンに当てはまるかを確認
                 foreach (var (row, col) in pattern)
                 {
-                    // 置いた位置の数を数える
+                    //勝ちパターン内に自分のマークがある場合、カウントを増やす
                     if (state[row, col] == (int)targetPlayer)
                     {
                         countTargetPlayer++;
@@ -126,13 +131,15 @@ namespace MaruBatsuGame
                     }
                 }
 
-                // ２手以上＋空欄が値を持っている場合（＝次で勝てる状態）
+                // ２手以上
+                // 空欄が値を持っている場合（＝次の手で勝てる状態）
                 if (countTargetPlayer == 2 && emptyCell.HasValue)
                 {
-                    // 空いている位置を返す。
+                    // 勝利するための最適な位置を返す
                     return emptyCell;
                 }
             }
+            // 勝ち手がない場合は null を返す
             return null;
         }
     }

@@ -4,15 +4,9 @@ namespace MaruBatsuGame
 {
     public class GameManager
     {
-        // ゲーム開始時に、先攻プレイヤーを現行プレイヤーとしてセット
-        // プレイヤーのターン管理に使用され、交代時に更新される
-        public static int currentPlayer = 0;
-
-        public static void PlayGame(int startingPlayerNum)
+        public static void PlayGame()
         {
-            // currentPlayerに先攻後攻の値をセットする
-            PlayerBase.setCurrentPlayer(startingPlayerNum);
-
+            PlayerBase.setCurrentPlayer(currentPlayer);
             // 初期状態のボードの表示
             Board.WriteBoard(Board.state);
 

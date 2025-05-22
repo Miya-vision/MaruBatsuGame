@@ -1,4 +1,6 @@
-﻿namespace MaruBatsuGame
+﻿using static MaruBatsuGame.PlayerBase;
+
+namespace MaruBatsuGame
 {
     internal class PlayerBase
 
@@ -12,7 +14,49 @@
             SecondPlayer = 2// 後攻
         }
 
+        // ゲーム開始時に、先攻プレイヤーを現行プレイヤーとしてセット
+        // プレイヤーのターン管理に使用され、交代時に更新される
+        public static int currentPlayer = 0;
+
+        public static int opponent = 0;
+        
+        //PvPかPvEを選択
+        public static int selectOpponent()
+        {
+            while (true)
+            {
+                Console.WriteLine("対戦相手を選んでください");
+                Console.WriteLine("【１】２Pプレイヤー");
+                Console.WriteLine("【２】CPU");
+                Console.Write("番号を入力してください: ");
+
+                string selectOpponent = Console.ReadLine();
+
+                if (!string.IsNullOrEmpty(selectOpponent) && int.TryParse(selectOpponent, out int selectOpponentNum)
+                        && selectOpponentNum >= 1 && selectOpponentNum <= 2)
+                {
+                    Console.Clear();
+
+                    if (selectOpponentNum == 2)
+                    {
+                        // CPUのレベル選択
+                        Cpu.InputLevel();
+
+                        return selectOpponentNum;
+                    }
+
+                    opponent = selectOpponentNum;
+                }
+                else
+                {
+                    Console.WriteLine("無効な入力です。もう一度選択してください。");
+                }
+            }
+        }
+
         // 先攻・後攻の選択
+        //[1] 先攻
+        //[2] 後攻
         public static int startingTurnChoice()
 
         {
@@ -21,8 +65,8 @@
             while (true)
             {
                 Console.WriteLine("先攻・後攻を選んでください。");
-                Console.WriteLine("[1] 先攻を選ぶ");
-                Console.WriteLine("[2] 後攻を選ぶ");
+                Console.WriteLine("【１】 先攻を選ぶ");
+                Console.WriteLine("【２】 後攻を選ぶ");
                 Console.Write("番号を入力してください: ");
 
                 string startingPlayer = Console.ReadLine();
@@ -31,15 +75,7 @@
                         && startingPlayerNum >= 1 && startingPlayerNum <= 2)
                 {
                     Console.Clear();
-
-                    if (startingPlayerNum == 1)
-                    {
-                        Console.WriteLine("先攻でゲームを開始します。");
-                    }
-                    else
-                    {
-                        Console.WriteLine("後攻でゲームを開始します。");
-                    }
+                    Console.WriteLine(startingPlayerNum == 1 ? "先攻でゲームを開始します。" : "後攻でゲームを開始します。");
 
                     // currentPlayerに先攻・後攻をセットするための値を渡す
                     return startingPlayerNum;
@@ -48,25 +84,12 @@
                 Console.WriteLine("無効な入力です。もう一度選択してください。");
             }
         }
-
-        ///<summary>
-        /// currentPlayer();に先攻・後攻時の入力した値をセット
-        ///【１】先攻:FirstPlayer　
-        ///【２】後攻:SecondPlayer
-        ///</summary>
+        
+        //currentPlayerに先攻・後攻時に選択した値をセット
         public static void setCurrentPlayer(int startingPlayer)
         {
-            // 先攻を選択していた場合
-            if (startingPlayer == 1)
-            {
-                GameManager.currentPlayer = (int)PlayerType.FirstPlayer;
-
-            }
-            // 後攻を選択していた場合
-            else if (startingPlayer == 2)
-            {
-                GameManager.currentPlayer = (int)PlayerType.SecondPlayer;
-            }
+                currentPlayer = (startingPlayer == 1) ? (int)PlayerType.FirstPlayer : (int)PlayerType.SecondPlayer;
+            Console.WriteLine($"セット後の currentPlayer: {currentPlayer}, opponent: {opponent}"); // デバッグ用
 
         }
     }

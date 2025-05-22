@@ -12,8 +12,8 @@ namespace MaruBatsuGame
             while (true)
             {
                 Console.WriteLine("CPUプレイヤーのレベルを選択してください");
-                Console.WriteLine("1.普通(Level 1)");
-                Console.WriteLine("2.上級(Level 2)");
+                Console.WriteLine("【１】普通(Level 1)");
+                Console.WriteLine("【２】上級(Level 2)");
                 Console.Write("番号を入力してください: ");
 
                 string level = Console.ReadLine();
@@ -58,7 +58,7 @@ namespace MaruBatsuGame
                 if (cpuLevel == 2)
                 {
                     // 現在のプレイヤー（手番）を取得
-                    PlayerType currentPlayer = (PlayerType)GameManager.currentPlayer;
+                    PlayerType currentPlayer = (PlayerType)PlayerBase.currentPlayer;
 
                     // 対戦相手（手番を交代するプレイヤー）を取得
                     PlayerType opponentPlayer = (currentPlayer == PlayerType.FirstPlayer) ? PlayerType.SecondPlayer : PlayerType.FirstPlayer;
