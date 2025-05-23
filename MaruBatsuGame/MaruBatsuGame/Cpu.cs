@@ -23,9 +23,10 @@ namespace MaruBatsuGame
                     // 現在の難易度をセット
                     cpuLevel = levelNum;
 
-                    Console.Clear();
+                    //Console.Clear();
 
                     Console.WriteLine("Level" + level + "を選択しました");
+                    Console.WriteLine($"セット後の currentPlayer: {currentPlayer}, opponent: {opponent}"); // デバッグ用
 
                     break;
                 }

@@ -6,13 +6,16 @@ namespace MaruBatsuGame
     {
         public static void PlayGame()
         {
-            PlayerBase.setCurrentPlayer(currentPlayer);
+            //currentPlayerに先攻側をセット
+            PlayerBase.setCurrentPlayer(firstMover);
+
             // 初期状態のボードの表示
             Board.WriteBoard(Board.state);
 
             // 空欄がなくなるまで繰り返す
             while (!Board.IsBoardFull(Board.state))
             {
+                Console.WriteLine($"セット後の currentPlayer: {currentPlayer}, opponent: {opponent}"); // デバッグ用
                 // 入力
                 if (currentPlayer == (int)PlayerType.FirstPlayer)
                 {

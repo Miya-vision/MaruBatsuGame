@@ -18,8 +18,12 @@ namespace MaruBatsuGame
         // プレイヤーのターン管理に使用され、交代時に更新される
         public static int currentPlayer = 0;
 
+        //対戦相手
         public static int opponent = 0;
-        
+
+        //先攻後攻選択
+        public static int firstMover = 0;
+
         //PvPかPvEを選択
         public static int selectOpponent()
         {
@@ -35,17 +39,23 @@ namespace MaruBatsuGame
                 if (!string.IsNullOrEmpty(selectOpponent) && int.TryParse(selectOpponent, out int selectOpponentNum)
                         && selectOpponentNum >= 1 && selectOpponentNum <= 2)
                 {
-                    Console.Clear();
+                    //Console.Clear();
 
                     if (selectOpponentNum == 2)
                     {
+                        opponent = selectOpponentNum;
+                        Console.WriteLine($"セット後の currentPlayer: {currentPlayer}, opponent: {opponent}"); // デバッグ用
+
                         // CPUのレベル選択
                         Cpu.InputLevel();
 
-                        return selectOpponentNum;
                     }
 
                     opponent = selectOpponentNum;
+                    Console.WriteLine($"セット後の currentPlayer: {currentPlayer}, opponent: {opponent}"); // デバッグ用
+
+                    return selectOpponentNum;
+
                 }
                 else
                 {
@@ -60,7 +70,7 @@ namespace MaruBatsuGame
         public static int startingTurnChoice()
 
         {
-            Console.Clear();
+            //Console.Clear();
 
             while (true)
             {
@@ -74,7 +84,15 @@ namespace MaruBatsuGame
                 if (!string.IsNullOrEmpty(startingPlayer) && int.TryParse(startingPlayer, out int startingPlayerNum)
                         && startingPlayerNum >= 1 && startingPlayerNum <= 2)
                 {
-                    Console.Clear();
+                    //Console.Clear();
+                    if(startingPlayerNum == 1)
+                    {
+                        firstMover = startingPlayerNum;
+                    }
+
+                    firstMover= startingPlayerNum;
+
+                    Console.WriteLine($"セット後の currentPlayer: {PlayerBase.currentPlayer}, opponent: {PlayerBase.opponent}, firstMover: {PlayerBase.firstMover}"); // デバッグ用
                     Console.WriteLine(startingPlayerNum == 1 ? "先攻でゲームを開始します。" : "後攻でゲームを開始します。");
 
                     // currentPlayerに先攻・後攻をセットするための値を渡す
@@ -86,10 +104,11 @@ namespace MaruBatsuGame
         }
         
         //currentPlayerに先攻・後攻時に選択した値をセット
-        public static void setCurrentPlayer(int startingPlayer)
+        public static void setCurrentPlayer(int firstMover)
         {
-                currentPlayer = (startingPlayer == 1) ? (int)PlayerType.FirstPlayer : (int)PlayerType.SecondPlayer;
-            Console.WriteLine($"セット後の currentPlayer: {currentPlayer}, opponent: {opponent}"); // デバッグ用
+            Console.WriteLine($"セット後の currentPlayer: {PlayerBase.currentPlayer}, opponent: {PlayerBase.opponent}, firstMover: {firstMover}");// デバッグ用
+            currentPlayer = (firstMover == 1) ? (int)PlayerType.FirstPlayer : (int)PlayerType.SecondPlayer;
+            Console.WriteLine($"セット後の currentPlayer: {PlayerBase.currentPlayer}, opponent: {PlayerBase.opponent}, firstMover: {firstMover}");// デバッグ用
 
         }
     }
