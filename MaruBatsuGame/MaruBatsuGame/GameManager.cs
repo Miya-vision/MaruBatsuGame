@@ -15,15 +15,22 @@ namespace MaruBatsuGame
             // 空欄がなくなるまで繰り返す
             while (!Board.IsBoardFull(Board.state))
             {
-                Console.WriteLine($"セット後の currentPlayer: {currentPlayer}, opponent: {opponent}"); // デバッグ用
-                // 入力
-                if (currentPlayer == (int)PlayerType.FirstPlayer)
+                if (opponent == 1)
                 {
+                    // 入力
                     Player.PlayerChoiceNumber(Board.state);
                 }
-                else
+                else if (opponent == 2)
                 {
-                    Cpu.ChoiceCpuNumber(Board.state);
+                    // 入力
+                    if (currentPlayer == (int)PlayerType.FirstPlayer)
+                    {
+                        Player.PlayerChoiceNumber(Board.state);
+                    }
+                    else
+                    {
+                        Cpu.ChoiceCpuNumber(Board.state);
+                    }
                 }
 
                 // 勝敗判定　勝利決定時即終了
@@ -47,6 +54,7 @@ namespace MaruBatsuGame
                 if (currentPlayer == (int)PlayerType.FirstPlayer)
                 {
                     currentPlayer = (int)PlayerType.SecondPlayer;
+                    Console.WriteLine($"現在のプレイやーは{currentPlayer}");
                 }
                 else
                 {

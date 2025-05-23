@@ -41,7 +41,7 @@
                 // 空欄の確認　PlayerType.None（空欄）なら入力できる
                 if (state[row, col] == (int)PlayerType.None)
                 {
-                    state[row, col] = (int)PlayerType.FirstPlayer;
+                    state[row, col] = currentPlayer;
                     break;
                 }
                 else

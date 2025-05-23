@@ -1,12 +1,11 @@
-﻿using System.ComponentModel.Design;
-using static MaruBatsuGame.PlayerBase;
+﻿using static MaruBatsuGame.PlayerBase;
 
 namespace MaruBatsuGame
 {
     internal class Board
     {
         // 空欄の情報を入れるリスト
-        public static List<(int, int)> emptyCells = new List<(int, int)>();
+        public static List<(int, int)> emptyCells = [];
 
         // 〇×ゲームのボード作成
         public static int[,] state = new int[,]
@@ -27,7 +26,7 @@ namespace MaruBatsuGame
 
                 for (int j = 0; j < state.GetLength(1); j++)
                 {
-                    // stateの数字を確認して○、×、＿へ変換
+                    // stateの数字(PlayerType)を確認して○、×、＿へ変換
                     Console.Write(state[i, j] == (int)PlayerType.None ? "　 " : state[i, j] == (int)PlayerType.FirstPlayer ? " ○ " : " × ");
                     Console.Write("|");
                 }
@@ -41,7 +40,6 @@ namespace MaruBatsuGame
         {
             // リストのリセット
             Board.emptyCells.Clear();
-
             for (int i = 0; i < state.GetLength(0); i++)
             {
                 for (int j = 0; j < state.GetLength(1); j++)
@@ -65,17 +63,17 @@ namespace MaruBatsuGame
         //勝ちパターンリストの作成
         public static List<List<(int, int)>> GetWinPatterns()
         {
-            return new List<List<(int, int)>>
-            {
-                new List<(int, int)> { (0, 0), (0, 1), (0, 2) },
-                new List<(int, int)> { (1, 0), (1, 1), (1, 2) },
-                new List<(int, int)> { (2, 0), (2, 1), (2, 2) },
-                new List<(int, int)> { (0, 0), (1, 0), (2, 0) },
-                new List<(int, int)> { (0, 1), (1, 1), (2, 1) },
-                new List<(int, int)> { (0, 2), (1, 2), (2, 2) },
-                new List<(int, int)> { (0, 0), (1, 1), (2, 2) },
-                new List<(int, int)> { (0, 2), (1, 1), (2, 0) }
-            };
+            return
+            [
+                [(0, 0), (0, 1), (0, 2)],
+                [(1, 0), (1, 1), (1, 2)],
+                [(2, 0), (2, 1), (2, 2)],
+                [(0, 0), (1, 0), (2, 0)],
+                [(0, 1), (1, 1), (2, 1)],
+                [(0, 2), (1, 2), (2, 2)],
+                [(0, 0), (1, 1), (2, 2)],
+                [(0, 2), (1, 1), (2, 0)]
+            ];
         }
 
         // 勝者を判定するメソッド

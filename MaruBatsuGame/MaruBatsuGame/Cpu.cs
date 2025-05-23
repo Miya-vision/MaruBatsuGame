@@ -1,5 +1,4 @@
 ﻿using System.Data;
-using System.Security.Cryptography.X509Certificates;
 
 namespace MaruBatsuGame
 {
@@ -23,10 +22,9 @@ namespace MaruBatsuGame
                     // 現在の難易度をセット
                     cpuLevel = levelNum;
 
-                    //Console.Clear();
+                    Console.Clear();
 
                     Console.WriteLine("Level" + level + "を選択しました");
-                    Console.WriteLine($"セット後の currentPlayer: {currentPlayer}, opponent: {opponent}"); // デバッグ用
 
                     break;
                 }
@@ -52,7 +50,7 @@ namespace MaruBatsuGame
                 if (cpuLevel == 1)
                 {
                     var (row, col) = Board.emptyCells[n.Next(Board.emptyCells.Count)];
-                    state[row, col] = (int)PlayerType.SecondPlayer;
+                    state[row, col] = currentPlayer;
                 }
 
                 // 難易度【上級】：優先順位に応じた入力
@@ -83,7 +81,7 @@ namespace MaruBatsuGame
                     }
 
                     // 勝てる手があれば優先
-                    else if　(winningMove.HasValue)
+                    else if (winningMove.HasValue)
                     {
                         var (row, col) = winningMove.Value;
                         state[row, col] = (int)PlayerType.SecondPlayer;
@@ -108,7 +106,6 @@ namespace MaruBatsuGame
                     {
                         var (row, col) = Board.emptyCells[n.Next(Board.emptyCells.Count)];
                         state[row, col] = (int)PlayerType.SecondPlayer;
-
                     }
                 }
             }
