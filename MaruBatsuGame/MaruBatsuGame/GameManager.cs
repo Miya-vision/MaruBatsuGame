@@ -54,7 +54,7 @@ namespace MaruBatsuGame
                 if (currentPlayer == (int)PlayerType.FirstPlayer)
                 {
                     currentPlayer = (int)PlayerType.SecondPlayer;
-                    Console.WriteLine($"現在のプレイやーは{currentPlayer}");
+                    Console.WriteLine($"現在のプレイヤーは{currentPlayer}");
                 }
                 else
                 {
